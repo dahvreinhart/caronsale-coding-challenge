@@ -3,6 +3,7 @@ import { ILogger } from "./services/Logger/interface/ILogger";
 import { DependencyIdentifier } from "./DependencyIdentifiers";
 import "reflect-metadata";
 import { ICarOnSaleClient } from "./services/CarOnSaleClient/interface/ICarOnSaleClient";
+import { aggregateAuctionData } from './services/CarOnSaleClient/util/CarOnSaleAPIUtil';
 import { AggregateAuctionData, RunningAuction } from "./services/CarOnSaleClient/types/carOnSale";
 
 @injectable()
@@ -28,13 +29,13 @@ export class AuctionMonitorApp {
             console.log(runningAuctions);
 
             // Parse runing auction data and aggregate data for display
-            const aggregateAuctionData = this.aggregateAuctionData(runningAuctions);
+            const auctionDataToPrint: AggregateAuctionData = aggregateAuctionData(runningAuctions);
 
             // Print aggregated data to console
             this.logger.log(`
-                NUMBER OF AUCTIONS: ${aggregateAuctionData.numAuctions}
-                AVERAGE NUMBER OF BIDS: ${aggregateAuctionData.avgNumBids}
-                AVERAGE AUCTION PROGRESS (%): ${aggregateAuctionData.avgPercentAuctionProgress}
+                NUMBER OF AUCTIONS: ${auctionDataToPrint.numAuctions}
+                AVERAGE NUMBER OF BIDS: ${auctionDataToPrint.avgNumBids}
+                AVERAGE AUCTION PROGRESS (%): ${auctionDataToPrint.avgPercentAuctionProgress}
             `);
         } catch (error) {
             // Exit with error
@@ -57,24 +58,4 @@ export class AuctionMonitorApp {
         this.logger.log(`Auction Monitor ended with no errors.`);
         process.exit(0);
     }
-
-    /*
-     * Method to aggregate auction data from the CarOnSale API and calculate values
-     * to be displayed to the console.
-     */
-    private aggregateAuctionData(runningAuctions: RunningAuction[]): AggregateAuctionData {
-        // Run through the running auctions from the API and sum properties to get averages
-        let totalBids = 0, totalPercentAuctionProgress = 0;
-        runningAuctions.forEach(ra => {
-            totalBids += ra.numBids;
-            totalPercentAuctionProgress += (ra.currentHighestBidValue / ra.minimumRequiredAsk);
-        });
-
-        return {
-            numAuctions: runningAuctions.length,
-            avgNumBids: (totalBids / runningAuctions.length),
-            avgPercentAuctionProgress: (totalPercentAuctionProgress / runningAuctions.length),
-        };
-    }
-
 }
