@@ -13,8 +13,12 @@ export class AuctionMonitorApp {
         @inject(DependencyIdentifier.CARONSALECLIENT) private carOnSaleClient: ICarOnSaleClient,
     ) { }
 
+    /*
+     * Executive method to handle retrieving data from the API access client,
+     * aggregating it, printing results to the console and, ultimately, detemining
+     * the exit code based on success/failure of previous operations.
+     */
     public async start(): Promise<void> {
-
         this.logger.log(`Auction Monitor started.`);
 
         try {
@@ -39,11 +43,12 @@ export class AuctionMonitorApp {
 
         // Exit with no errors
         this.exit(null);
-
     }
 
+    /*
+     * Simple method to shut down the app and print any error encountered to the console.
+     */
     private exit(err=null) {
-
         if (err) {
             this.logger.log(`Auction Monitor ended with error: ${err}`);
             process.exit(1);
@@ -51,10 +56,14 @@ export class AuctionMonitorApp {
 
         this.logger.log(`Auction Monitor ended with no errors.`);
         process.exit(0);
-
     }
 
+    /*
+     * Method to aggregate auction data from the CarOnSale API and calculate values
+     * to be displayed to the console.
+     */
     private aggregateAuctionData(runningAuctions: RunningAuction[]): AggregateAuctionData {
+        // Run through the running auctions from the API and sum properties to get averages
         let totalBids = 0, totalPercentAuctionProgress = 0;
         runningAuctions.forEach(ra => {
             totalBids += ra.numBids;

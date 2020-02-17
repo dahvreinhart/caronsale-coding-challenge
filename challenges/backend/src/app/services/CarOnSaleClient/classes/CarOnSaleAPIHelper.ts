@@ -11,35 +11,59 @@ export class CarOnSaleAPIHelper {
     private hashCycles = 5;
     private authData;
 
+    /*
+     * Call the CarOnSale authentication API and acquire the auth data for the buyer.
+     * Stores the auth data on the instance in case of possible future reuse.
+     */
     public async getAuthTokenData(): Promise<CarOnSaleAPIAuthData> {
         let response;
         if (this.authData) {
-            // Check/refresh the existing auth data if it exists
-            response = await this.testAuthData(this.authData);
+            // Try to check/refresh the existing auth data if it exists
+            try {
+                response = await this.checkRefreshAuthData(this.authData);
+            } catch (error) {
+                // If it fails, just get new credentials
+                response = await this.getNewAuthData();
+            }
         } else {
-            // Hash password in prep to send to API
-            const password = this.hashPasswordWithCycles(this.userPassword, this.hashCycles);
-
-            // Retrieve the userId and authToken
-            response = await this.axiosInstance.put(
-                `/v1/authentication/${this.userMailId}`,
-                { password: password }
-            );
-
-            // Set the authData to be reused in the future if needed
-            this.authData = response.data;
+            response = await this.getNewAuthData();
         }
+
+        // Set the authData to be reused in the future if needed
+        this.authData = response.data;
 
         return response.data;
     }
 
-    private async testAuthData(authData: CarOnSaleAPIAuthData): Promise<CarOnSaleAPIAuthData> {
+    /*
+     * Method for acquiring a new set of auth credentials.
+     */
+    private async getNewAuthData(): Promise<CarOnSaleAPIAuthData> {
+        // Hash password in prep to send to API
+        const password = this.hashPasswordWithCycles(this.userPassword, this.hashCycles);
+
+        // Retrieve the userId and authToken from API
+        return await this.axiosInstance.put(
+            `/v1/authentication/${this.userMailId}`,
+            { password: password }
+        );
+    }
+
+    /*
+     * Method for checking the vlidity of a set of auth credentials and renewing them
+     * if still valid.
+     */
+    private async checkRefreshAuthData(authData: CarOnSaleAPIAuthData): Promise<CarOnSaleAPIAuthData> {
         return await this.axiosInstance.post(
             `/v1/authentication/${this.userMailId}`,
             authData
         );
     }
 
+    /*
+     * Method described in challenge notes to hash password in prep for communication
+     * to authentication API.
+     */
     private hashPasswordWithCycles(plainTextPassword: string, cycles: number): string {
         let hash = `${plainTextPassword}`;
         for (let i = 0; i < cycles; i++) {

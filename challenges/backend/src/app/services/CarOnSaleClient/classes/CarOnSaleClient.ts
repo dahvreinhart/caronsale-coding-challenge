@@ -7,11 +7,17 @@ import { RunningAuction } from "../types/carOnSale";
 @injectable()
 export class CarOnSaleClient implements ICarOnSaleClient {
 
+    /*
+     * Method to consume the API helper for authentication,
+     * call the CarOnSale auction API, and parse return data
+     * into a typed format which can be aggregated in the future.
+     */
     async getRunningAuctions(): Promise<RunningAuction[]> {
         // Connect and authenticate with CarOnSale auction API
         const apiHelper = new CarOnSaleAPIHelper();
         const authData = await apiHelper.getAuthTokenData();
 
+        // Instantiate an axios instance pre-populated with authentication headers
         const axiosInstance = Axios.create({
             baseURL: apiHelper.apiBaseURL,
             headers: {
