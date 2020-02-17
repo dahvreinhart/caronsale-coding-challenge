@@ -38,7 +38,7 @@ export class CarOnSaleAPIHelper {
     /*
      * Method for acquiring a new set of auth credentials.
      */
-    private async getNewAuthData(): Promise<CarOnSaleAPIAuthData> {
+    public async getNewAuthData(): Promise<CarOnSaleAPIAuthData> {
         // Hash password in prep to send to API
         const password = this.hashPasswordWithCycles(this.userPassword, this.hashCycles);
 
@@ -53,7 +53,7 @@ export class CarOnSaleAPIHelper {
      * Method for checking the vlidity of a set of auth credentials and renewing them
      * if still valid.
      */
-    private async checkRefreshAuthData(authData: CarOnSaleAPIAuthData): Promise<CarOnSaleAPIAuthData> {
+    public async checkRefreshAuthData(authData: CarOnSaleAPIAuthData): Promise<CarOnSaleAPIAuthData> {
         return await this.axiosInstance.post(
             `/v1/authentication/${this.userMailId}`,
             authData

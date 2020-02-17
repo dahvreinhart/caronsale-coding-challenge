@@ -3,6 +3,7 @@ import { injectable } from "inversify";
 import { CarOnSaleAPIHelper } from "./CarOnSaleAPIHelper";
 import Axios from "axios";
 import { RunningAuction } from "../types/carOnSale";
+import 'reflect-metadata';
 
 @injectable()
 export class CarOnSaleClient implements ICarOnSaleClient {
@@ -27,7 +28,7 @@ export class CarOnSaleClient implements ICarOnSaleClient {
         });
 
         // Call the API and get all auctions visible to the authenticated buyer
-        const response =  await axiosInstance.get('/v2/auction/buyer/');
+        const response = await axiosInstance.get('/v2/auction/buyer/');
 
         // Parse response data into typed objects
         const runningAuctions: RunningAuction[] = [];

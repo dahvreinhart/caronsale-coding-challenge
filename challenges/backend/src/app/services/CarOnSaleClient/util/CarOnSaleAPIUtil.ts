@@ -14,7 +14,7 @@ export function aggregateAuctionData(runningAuctions: RunningAuction[]): Aggrega
 
     return {
         numAuctions: runningAuctions.length,
-        avgNumBids: (totalBids / runningAuctions.length),
-        avgPercentAuctionProgress: (totalPercentAuctionProgress / runningAuctions.length),
+        avgNumBids: Number((totalBids / runningAuctions.length).toFixed(2)) || 0,
+        avgPercentAuctionProgress: Number((totalPercentAuctionProgress / runningAuctions.length).toFixed(2)) || 0,
     };
 }

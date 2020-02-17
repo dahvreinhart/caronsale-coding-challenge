@@ -25,8 +25,6 @@ export class AuctionMonitorApp {
         try {
             // Retrieve a list of running auctions from the CarOnSale API
             const runningAuctions: RunningAuction[] = await this.carOnSaleClient.getRunningAuctions();
-            console.log(runningAuctions.length);
-            console.log(runningAuctions);
 
             // Parse runing auction data and aggregate data for display
             const auctionDataToPrint: AggregateAuctionData = aggregateAuctionData(runningAuctions);
