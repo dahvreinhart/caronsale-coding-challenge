@@ -45,7 +45,7 @@ export class CarOnSaleAPIHelper {
         // Retrieve the userId and authToken from API
         return await this.axiosInstance.put(
             `/v1/authentication/${this.userMailId}`,
-            { password: password }
+            { password }
         );
     }
 

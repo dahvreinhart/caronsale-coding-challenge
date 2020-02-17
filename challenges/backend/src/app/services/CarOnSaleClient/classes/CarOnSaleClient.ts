@@ -13,7 +13,7 @@ export class CarOnSaleClient implements ICarOnSaleClient {
      * call the CarOnSale auction API, and parse return data
      * into a typed format which can be aggregated in the future.
      */
-    async getRunningAuctions(): Promise<RunningAuction[]> {
+    public async getRunningAuctions(): Promise<RunningAuction[]> {
         // Connect and authenticate with CarOnSale auction API
         const apiHelper = new CarOnSaleAPIHelper();
         const authData = await apiHelper.getAuthTokenData();
@@ -32,7 +32,7 @@ export class CarOnSaleClient implements ICarOnSaleClient {
 
         // Parse response data into typed objects
         const runningAuctions: RunningAuction[] = [];
-        for (let item of response.data.items) {
+        for (const item of response.data.items) {
             runningAuctions.push({
                 numBids: item.numBids,
                 currentHighestBidValue: item.currentHighestBidValue,

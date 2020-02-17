@@ -6,7 +6,8 @@ import { AggregateAuctionData, RunningAuction } from "../types/carOnSale";
  */
 export function aggregateAuctionData(runningAuctions: RunningAuction[]): AggregateAuctionData {
     // Run through the running auctions from the API and sum properties to get averages
-    let totalBids = 0, totalPercentAuctionProgress = 0;
+    let totalBids = 0
+    let totalPercentAuctionProgress = 0;
     runningAuctions.forEach(ra => {
         totalBids += ra.numBids;
         totalPercentAuctionProgress += (ra.currentHighestBidValue / ra.minimumRequiredAsk);
